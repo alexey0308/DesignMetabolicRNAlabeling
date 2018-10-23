@@ -1,5 +1,6 @@
 library(cowplot)
 library(dplyr)
+library(purrr)
 
 source(file.path("figure", "funs.R"))
 
