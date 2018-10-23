@@ -56,7 +56,6 @@ biotinsAsFlowThrough <- function(data) {
 ##'     result$fit - fitting results
 ##'     result$tab - fitting results with confidence intervals as a data.frame
 readFits <- function(d) {
-  models <- c("pure", "contaminated")
   res <- readRDS(file.path(d, "fit.rds"))
   pd <- readRDS(file.path(d, "pd.rds"))
   fits <- res[c("mu", "d")]
