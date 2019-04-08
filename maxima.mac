@@ -1,0 +1,49 @@
+
+/* Likelihood function for NB with mean m and overdispersion k.
+The mean m = m(d, mu) depends on the degradation rate delta and the mean expression mu */
+
+{Gamma(k+x)/x!/Gamma(k)}*(m/(m+k))^x * ((m+k)/k)^{-k};
+
+/* the log-likelihood */
+
+log(Gamma(x+k)/Gamm(k)/x!) + x*log(m/(m+k))  - k*log((m+k)/k);
+
+/* The expected Fisher information matrix is equal to variance of the score function.
+The score function S(x, m(mu, delta)) is a derivative of the log-likelihood with respect to the model parameters
+(we consider only d and mu in our derivations)
+
+The summants in the log-likelihood, which do not depend on these parameters,
+will be eliminated. Hence, we can omit x! and Gamma functions terms.
+
+The part of log-likelihood which depends on the mean m (and hence, on d and mu) is */
+
+x*log(m/(m+k))  - k*log((m+k)/k);
+
+/* if the score function S = f(x, m(mu,delta)) + C, where C does not depend on x, then
+var(S(x)) = var(f(x)) and we may keep only the term with x
+as a starting expression for further calculations: */
+
+logL: x * log(m/(m+k)) + not_depending_on_x + not_depending_on_m;
+
+/* The score function S(x,mu,d) is then */
+x*k/m/(m+k)*['diff(m, delta), 'diff(m, mu)] + not_depending_on_x;
+
+/* Since for NB var(x) = m*(m+k)/k, the variance-covariance matrix of the
+score function is var(x)*(k/m/(m+k))^2*diff(m, theta_i)*diff(m, theta_j), where
+theta_1 = delta and theta_2 = mu
+*/
+{(m*(m+k)/k)*(k/m/(m+k))^2}*{transpose(['diff(m, delta), 'diff(m, mu)]).['diff(m, delta), 'diff(m, mu)]};
+
+/* below we define this relation as a function, so we can input
+differentformulae for the mean m(mu, delta) */
+
+meanDerivative(m) := [diff(m, delta), diff(m, mu)];
+
+f(m) :=k/((m+k)*m)*transpose(meanDerivative(m)).meanDerivative(m);
+
+/* the Fisher information matrix for the SLAM-seq is */
+
+I_slam: f(mu*(1 - exp(-delta*t))) + f(mu* exp(-delta*t));
+
+/* the inverse of the SLAM-seq Fisher information matrix is */
+ratsimp(invert(I_slam));

@@ -4,6 +4,10 @@
 > Alexey Uvarovskii, Isabel Naarmann-de Vries, Christoph Dieterich  
 > bioRxiv 428862; doi: [https://doi.org/10.1101/428862](https://doi.org/10.1101/428862)
 
+## wxMaxima code for derivations
+
+[.mac file](maxima.mac)
+
 ## Requirements
 
 ```{r}
@@ -37,7 +41,11 @@ make fit-experiment
 ## estimate confidence intervals for the parameters
 make compute-conf-int
 
-## create figure 3
-make figure-3
+## create figure 6
+make figure-6
+
+## run slamseq analysis
+make prepare-slamseq-data
+make fit-slamseq
 
 ```

@@ -11,9 +11,9 @@ FIMvsTime <- function() {
     data.frame(time = t,
                I = f(list(t = t, d = 1, mu = 1), NB = FALSE))
   })
-  names(dat) <- c("labelled", "unlabelled", "both")
+  names(dat) <- c("labeled", "unlabeled", "both")
   dat <- dat %>% bind_rows(.id = "fraction")
-  dat$fraction <- factor(dat$fraction, c("labelled", "unlabelled", "both"))
+  dat$fraction <- factor(dat$fraction, c("labeled", "unlabeled", "both"))
 
   mu <- 10000
 
@@ -26,12 +26,15 @@ FIMvsTime <- function() {
     colour = fraction,
     log    = 'y',
     xlab   = expression(paste(log[2],"(",t ,"/" , tau, ")")),
-    ylab   = expression("Fisher information")
-  ) +
+    ylab   =
+      expression(paste(I[paste(delta, delta)]))) +
     coord_cartesian(xlim = c(-4, 4), ylim = c(.01, 2)) +
     scale_color_brewer(palette = "Set1", name = "") +
     annotation_logticks(sides = "l") +
-    theme(legend.position = c(0.1,1.15), legend.justification = c(0,1))
+    theme(
+      legend.position = c(0.1,1.15),
+      legend.justification = c(0,1),
+      axis.title.y = element_text(family = "serif"))
   q
 }
 
@@ -64,7 +67,7 @@ CIvsSet <- function() {
     scale_x_log10() +
     annotation_logticks(sides = "l") +
     scale_y_log10() +
-    xlab(expression(paste("d, ", hr^-1))) +
+    xlab(expression(paste(delta, ", ", hr^-1))) +
     ylab("relative 95% CI") +
     theme(legend.position = c(0.29,1.05),
           legend.justification = c(0,1),
@@ -84,7 +87,7 @@ saturationPlot <- function() {
   qplot(
     x   = mus,
     y   = sqrt(I_slam_inv(list(d = 1, t = 1, mu = mus, k = 100))),
-    ylab = "sd(d)/d",
+    ylab = expression(sd(delta)/delta),
     xlab = expression(mu),
     geom = "line",
     size = I(1)
@@ -114,8 +117,8 @@ inverseInfo <- function() {
     ts <- exp(seq(log(1e-3), log(15), .01))
     mus <- mu
     data.frame(
-      labelled = I_pulse(list(mu = mus, k = k, d = d, t = ts)),
-      unlabelled = I_chase(list(mu = mus, k = k, d = d, t = ts)),
+      labeled = I_pulse(list(mu = mus, k = k, d = d, t = ts)),
+      unlabeled = I_chase(list(mu = mus, k = k, d = d, t = ts)),
       both = I_slam(list(mu = mus, k = k, d = d, t = ts)),
       inverse = I_slam_inv(list(mu = mus, k = k, d = d, t = ts)),
       t = ts,
@@ -138,7 +141,7 @@ inverseInfo <- function() {
           size = I(1.0),
           group = rev(k)) +
     xlab(expression(t/tau)) +
-    ylab("sd(d)/d") +
+    ylab(expression(sd(delta)/delta)) +
     coord_cartesian(ylim = c(1e-1, 20)) +
    scale_colour_manual(
      values = rev(pal),
@@ -171,4 +174,5 @@ ggsave(
   plot = figure2,
   width = 174,
   height = 160,
+  device = cairo_pdf,
   units = "mm")

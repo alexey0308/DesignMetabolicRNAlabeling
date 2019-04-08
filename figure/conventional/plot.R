@@ -1,3 +1,5 @@
+## figure 6
+
 library(cowplot)
 library(dplyr)
 library(purrr)
@@ -21,8 +23,8 @@ getIFromData <- function(fit, normCoef, t, condition) {
       t = t
     )),
     t = t,
-    condition = c("pull_down" = "labelled",
-                  "flow_through" = "unlabelled")[condition],
+    condition = c("pull_down" = "labeled",
+                  "flow_through" = "unlabeled")[condition],
     stringsAsFactors = FALSE
     )
   res$id <- rownames(res)
@@ -59,7 +61,8 @@ plotFIForGenes <- function(o) {
     facet_wrap(~ t,
                scales = "free_y",
                labeller = as_labeller(function(x) paste(x, " hr"))) +
-    ylab(expression("Fisher information " %*% d^2)) +
+    ylab(
+     expression(paste(I[paste(delta, delta)] %.% delta^2))) +
     xlab(expression(paste("d, ", hr^-1))) +
     scale_x_log10() +
     scale_y_continuous(trans = "sqrt") +
@@ -75,6 +78,7 @@ plotFIForGenes <- function(o) {
     theme(strip.background = element_rect(fill = "white"),
           legend.position = c(.91,1),
           legend.justification = c(1,1),
+          axis.title.y = element_text(family = "serif"),
           text = element_text(size = 10),
           axis.text = element_text(size = 10))
   q
@@ -141,7 +145,8 @@ plotFastSlow <- function() {
     facet_wrap(~id,
                scales = "free_x"
                ) +
-    ylab(expression("Fisher information " %*% d^2)) +
+    ylab(
+      expression(paste(I[paste(delta, delta)] %.% delta^2))) +
     annotation_logticks(sides = 'b') +
     xlab("time, hr") +
     scale_y_log10(
@@ -150,6 +155,7 @@ plotFastSlow <- function() {
     ) +
     theme(strip.background = element_rect(fill = "white"),
           text = element_text(size = 10),
+          axis.title.y = element_text(family = "serif"),
           axis.text = element_text(size = 10))
   q
 }
@@ -165,7 +171,7 @@ q <- plot_grid(
 q
 
 ggsave(
-  filename=file.path("figure", "3", "figure.png"),
+  filename=file.path("figure", "conventional", "figure.png"),
   plot = q,
   dpi = 600,
   width = 174,
