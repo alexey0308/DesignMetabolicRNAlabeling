@@ -63,7 +63,7 @@ plotFIForGenes <- function(o) {
                labeller = as_labeller(function(x) paste(x, " hr"))) +
     ylab(
      expression(paste(I[paste(delta, delta)] %.% delta^2))) +
-    xlab(expression(paste("d, ", hr^-1))) +
+    xlab(expression(paste(delta, ", ", hr^-1))) +
     scale_x_log10() +
     scale_y_continuous(trans = "sqrt") +
     scale_color_brewer(palette = "Set1", name = "") +
