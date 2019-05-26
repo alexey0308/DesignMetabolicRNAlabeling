@@ -90,17 +90,15 @@ plotCIOrdered <- function(fit, cis) {
 
 }
 
+dash2comma <- function(x)
+  str_replace_all(x, "-", ", ")
+
 plotFigure3 <- function(res, ci) {
-  qs <- map(1:7, ~plotCIOrdered(res[[.x]]$fit, ci[[.x]]) +
-                   ggtitle(names(res)[.x]))
-  names(qs) <- names(res)
-  setsToPlot <- c(
-    "0-0.5",
-    "0-3",
-    "0-6",
-    "0-12"
-  )
-  q <- plot_grid(plotlist=qs[setsToPlot])
+  setsToPlot <- c("0-0.5", "0-3", "0-6", "0-12")
+  qs <- map(setsToPlot,
+            ~ plotCIOrdered(res[[.x]]$fit, ci[[.x]]) +
+              ggtitle(paste(dash2comma(.x), "hr")))
+  q <- plot_grid(plotlist=qs)
   q
 }
 
@@ -126,7 +124,7 @@ ggsave(
 qCITwoPointsTogether <- plotCIOrdered(
   res[["0-0.5-1"]]$fit,
   ci[["0-0.5-1"]]
-) + ggtitle("0-0.5-1")
+) + ggtitle("0, 0.5, 1 hr")
 ggsave(
   file.path("figure/supplementary/ci-0-0.5-1.pdf"),
   qCITwoPointsTogether,
@@ -160,21 +158,22 @@ dat <- map2(res, ci, function(.x ,cis) {
 dat <- bind_rows(dat)
 
 mu2Quantiles <- quantile(allPointsFit$fit$mu2, c(.4,.6))
+setsRelCIvsTau <- c(
+  "0-0.5-1-3-6-12-24",
+  "0-12",
+  "0-6"
+)
 
 qRelCIvsTau <- ggplot(
   data = dat %>% filter(
-    points %in% c(
-      "0-6", "0-12",
-      "0-0.5-1-3-6-12-24"),
+    points %in% setsRelCIvsTau,
     mu2 > mu2Quantiles[1],
     mu2 < mu2Quantiles[2]
   )) +
   geom_point(
-    aes(
-      x = tau,
+    aes(x = tau,
       y = relDeltaNA,
-      colour = points
-    ),
+      colour = points),
     size = .3,
     ##shape = ".",
     alpha = .6
@@ -183,18 +182,23 @@ qRelCIvsTau <- ggplot(
   ylab("relative CI (95%) ") +
   guides(
     colour = guide_legend(
-      override.aes = list(alpha = 1,size = 5))) +
+      override.aes = list(alpha = 1, size = 5))) +
   annotation_logticks(sides = 'l') +
   coord_cartesian(
     xlim = c(1, 20),
     ylim = c(.2,2)
   ) +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(
+    palette = "Set1",
+    breaks = setsRelCIvsTau,
+    labels = paste(dash2comma(setsRelCIvsTau), " hr")
+  ) +
   scale_y_log10() +
   scale_x_log10() +
-  theme(legend.position = c(0.1,1.05),
-    legend.justification = c(0,1))
-
+  theme(legend.position = c(0.03, 1.00),
+    legend.justification = c(0, 1),
+    legend.text = element_text(margin = margin(l = 5)),
+    legend.title = element_blank())
 
 
 I_slam_mu0 <- function(pars) {
