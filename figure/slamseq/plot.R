@@ -120,6 +120,14 @@ ggsave(
   height = 130,
   units = "mm",
   dpi = 400)
+ggsave(
+  file.path(figureDir, "ci.tiff"),
+  qRelCIOrdered,
+  width = 174,
+  height = 130,
+  units = "mm",
+  compression = "lzw",
+  dpi = 400)
 
 qCITwoPointsTogether <- plotCIOrdered(
   res[["0-0.5-1"]]$fit,
@@ -138,6 +146,14 @@ ggsave(
   width = 174/2,
   height = 80,
   units = "mm",
+  dpi = 400)
+ggsave(
+  file.path("figure/supplementary/ci-0-0.5-1.tiff"),
+  qCITwoPointsTogether,
+  width = 174/2,
+  height = 80,
+  units = "mm",
+  compression = "lzw",
   dpi = 400)
 
 dat <- map2(res, ci, function(.x ,cis) {
@@ -195,9 +211,9 @@ qRelCIvsTau <- ggplot(
   ) +
   scale_y_log10() +
   scale_x_log10() +
-  theme(legend.position = c(0.03, 1.00),
+  theme(legend.position = c(0.03, 1.05),
     legend.justification = c(0, 1),
-    legend.text = element_text(margin = margin(l = 5)),
+    legend.text = element_text(margin = margin(l = -1)),
     legend.title = element_blank())
 
 
@@ -303,10 +319,11 @@ qRelCIvsTauAnnotated
 q <- plot_grid(
   qInformationVsTime,
   qRelCIvsTauAnnotated,
-  rel_widths = c(1,1),
+  rel_widths = c(.9,1),
   nrow = 1,
   labels = c("A", "B")
 )
+
 ggsave(
   file.path(figureDir, "ci-time.pdf"),
   q,
@@ -320,6 +337,14 @@ ggsave(
   width = 174,
   height = 80,
   units = "mm",
+  dpi = 400)
+ggsave(
+  file.path(figureDir, "ci-time.tiff"),
+  q,
+  width = 174,
+  height = 80,
+  units = "mm",
+  compression = "lzw",
   dpi = 400)
 
 
@@ -366,3 +391,11 @@ ggsave(
   height = 80,
   units = "mm",
   device = cairo_pdf)
+ggsave(
+  file.path("figure/supplementary/correlation.tiff"),
+  qCor,
+  width = 174/2,
+  height = 80,
+  units = "mm",
+  dpi = 400,
+  compression = "lzw")

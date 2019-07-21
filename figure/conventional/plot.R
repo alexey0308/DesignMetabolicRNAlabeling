@@ -140,7 +140,7 @@ plotFastSlow <- function() {
                   colour =  condition,
                   linetype = overdispersion)) +
     scale_color_brewer(palette = "Set1", name = "") +
-    scale_x_log10() +
+    scale_x_log10(breaks = c(0.01, 1, 100)) +
       scale_y_log10() +
     facet_wrap(~id,
                scales = "free_x"
@@ -176,4 +176,12 @@ ggsave(
   dpi = 600,
   width = 174,
   height = 130,
+  units = "mm")
+ggsave(
+  filename=file.path("figure", "conventional", "figure.tiff"),
+  plot = q,
+  dpi = 600,
+  width = 174,
+  height = 130,
+  compression = "lzw",
   units = "mm")

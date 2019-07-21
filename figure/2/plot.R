@@ -143,6 +143,7 @@ inverseInfo <- function() {
     xlab(expression(t/tau)) +
     ylab(expression(sd(delta)/delta)) +
     coord_cartesian(ylim = c(1e-1, 20)) +
+    scale_x_log10(breaks = c(.01, 1)) +
    scale_colour_manual(
      values = rev(pal),
      name = "k",
@@ -175,4 +176,12 @@ ggsave(
   width = 174,
   height = 160,
   device = cairo_pdf,
+  units = "mm")
+ggsave(
+  filename = file.path("figure", "2", "figure.tiff"),
+  plot = figure2,
+  width = 174,
+  height = 160,
+  dpi = 400,
+  compression = "lzw",
   units = "mm")
